@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .top-nav {
+    top: calc(env(safe-area-inset-top, 0px) + 4.25rem);
+  }
+
+  .top-nav-2 {
+    top: calc(env(safe-area-inset-top, 0px) + 5.25rem);
+  }
+
+  .h-min {
+    height: min-content;
+  }
+
+  .pt-nav {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 4.25rem);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  
+  .pl-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+  
+  .pr-safe {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  .pr-scrollbar-safe {
+    padding-right: calc(env(safe-area-inset-right, 0px) + var(--scrollbar-offset, 0px));
+  }
+
+  .table-of-contents ul {
+    margin-top: 0.25rem;
+    padding-left: 1rem;
+  }
+
+  .table-of-contents li {
+    padding-bottom: 0.25rem;
+  }
+}
+
+@layer components {
+    .p-safe {
+      @apply pt-safe pb-safe pl-safe pr-safe;
+    }
+  
+    .p-scrollbar-safe {
+      @apply pt-safe pb-safe pl-safe pr-scrollbar-safe;
+    }
+}
+  
+*:focus {
+    outline: 0;
+}
+
+body {
+    -webkit-tap-highlight-color: transparent;
+}
+
+h2, h3 {
+  font-weight: bold;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+h4 {
+  font-weight: bold;
+  text-transform: uppercase;
+  color: rgb(59, 130, 246);
+  font-size: 0.9rem;
+  line-height: 1.5rem;
+}
+
+p {
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 2rem;
+  padding-block-end: 2rem;
+}

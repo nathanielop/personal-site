@@ -1,0 +1,12 @@
+{{ define "main" }}
+  <main class="w-full flex flex-col items-center">
+    {{ partial "home/hero" . }}
+    <div class='flex-1 flex flex-col max-w-screen-lg'>
+      {{ partial "home/highlight-1" . }}
+      {{ partial "home/highlight-2" . }}
+      {{ partial "home/highlight-3" . }}
+    </div>
+  </main>
+
+  {{ .Content }}
+{{ end }}

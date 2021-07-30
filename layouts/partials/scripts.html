@@ -1,0 +1,3 @@
+{{ $built := resources.Get "js/index.js" | js.Build "main.js" }}
+
+<script type="text/javascript" src="{{ $built.RelPermalink }}"></script>

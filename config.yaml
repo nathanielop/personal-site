@@ -1,0 +1,27 @@
+languageCode:           "en"
+title:                  "A personal site of sorts"
+baseURL:                "https://na.thaniel.dev/"
+enableInlineShortcodes: true
+
+markup:
+  goldmark:
+    renderer:
+      unsafe:           true
+  highlight:
+    noClasses:          false
+
+buildDrafts:            true
+buildFuture:            true
+
+enableRobotsTXT:        true
+metaDataFormat:         "yaml"
+disableKinds:           ["404"]
+
+module:
+  mounts:
+    - source: "node_modules/bootstrap-icons/icons"
+      target: "static/svgs"
+
+params:
+  description:          "The best personal site that ever was."
+  authors:              "Nathaniel Pendy"

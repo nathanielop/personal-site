@@ -1,0 +1,17 @@
+{
+  "name": "nathaniel-personal-site",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathanielop/personal-site.git"
+  },
+  "homepage": "https://github.com/nathanielop/personal-site#readme",
+  "dependencies": {
+    "autoprefixer": "10.2",
+    "bootstrap-icons": "1.5",
+    "postcss": "8.3",
+    "postcss-cli": "8.3",
+    "tailwindcss": "2.2.4"
+  }
+}

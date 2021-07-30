@@ -1,0 +1,4 @@
+/src/*.pem
+.DS_STORE
+node_modules
+resources/*
