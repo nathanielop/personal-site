@@ -21,7 +21,7 @@
               {{- range $section := $group.content -}}
                 {{- $section_slug := $section.title | urlize -}}
                 {{- $is_active := and $is_active_group (eq $page_slug $section_slug) -}}
-                {{- $href := printf "/docs/%s/%s/" $group_slug $section_slug }}
+                {{- $href := printf "/posts/%s/%s/" $group_slug $section_slug }}
                 <li class="flex w-full"><a href="{{ $href }}" class="inline-flex flex-1 flex justify-between space-x-4 font-semibold text-sm cursor-pointer hover:text-gray-600 hover:bg-gray-200 whitespace-nowrap p-2 pl-6 text-gray-400 text-xs{{ if $is_active }} text-gray-900{{ end }}">
                   {{ $section.title }}
                 </a></li>
@@ -31,7 +31,7 @@
         </li>
       {{- else }}
         <li class="py-3 px-4 border-t w-full"></li>
-        <li class="flex w-full"><a href="/docs/{{ $group_slug }}/" class="inline-flex flex-1 justify-between space-x-4 font-semibold text-sm cursor-pointer hover:text-gray-600 hover:bg-gray-200 whitespace-nowrap p-3 text-gray-400 text-xs{{ if $is_active_group }} text-gray-900{{ end }}">
+        <li class="flex w-full"><a href="/posts/{{ $group_slug }}/" class="inline-flex flex-1 justify-between space-x-4 font-semibold text-sm cursor-pointer hover:text-gray-600 hover:bg-gray-200 whitespace-nowrap p-3 text-gray-400 text-xs{{ if $is_active_group }} text-gray-900{{ end }}">
           {{ $group.title }}
         </a></li>
       {{- end }}
