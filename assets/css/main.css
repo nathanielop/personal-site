@@ -38,15 +38,6 @@
   .pr-scrollbar-safe {
     padding-right: calc(env(safe-area-inset-right, 0px) + var(--scrollbar-offset, 0px));
   }
-
-  .table-of-contents ul {
-    margin-top: 0.25rem;
-    padding-left: 1rem;
-  }
-
-  .table-of-contents li {
-    padding-bottom: 0.25rem;
-  }
 }
 
 @layer components {
