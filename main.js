@@ -17015,6 +17015,128 @@
     }
   };
   CanvasTexture.prototype.isCanvasTexture = true;
+  var CylinderGeometry = class extends BufferGeometry {
+    constructor(radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 8, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2) {
+      super();
+      this.type = "CylinderGeometry";
+      this.parameters = {
+        radiusTop,
+        radiusBottom,
+        height,
+        radialSegments,
+        heightSegments,
+        openEnded,
+        thetaStart,
+        thetaLength
+      };
+      const scope = this;
+      radialSegments = Math.floor(radialSegments);
+      heightSegments = Math.floor(heightSegments);
+      const indices = [];
+      const vertices = [];
+      const normals = [];
+      const uvs = [];
+      let index = 0;
+      const indexArray = [];
+      const halfHeight = height / 2;
+      let groupStart = 0;
+      generateTorso();
+      if (openEnded === false) {
+        if (radiusTop > 0)
+          generateCap(true);
+        if (radiusBottom > 0)
+          generateCap(false);
+      }
+      this.setIndex(indices);
+      this.setAttribute("position", new Float32BufferAttribute(vertices, 3));
+      this.setAttribute("normal", new Float32BufferAttribute(normals, 3));
+      this.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
+      function generateTorso() {
+        const normal = new Vector3();
+        const vertex2 = new Vector3();
+        let groupCount = 0;
+        const slope = (radiusBottom - radiusTop) / height;
+        for (let y = 0; y <= heightSegments; y++) {
+          const indexRow = [];
+          const v = y / heightSegments;
+          const radius = v * (radiusBottom - radiusTop) + radiusTop;
+          for (let x = 0; x <= radialSegments; x++) {
+            const u = x / radialSegments;
+            const theta = u * thetaLength + thetaStart;
+            const sinTheta = Math.sin(theta);
+            const cosTheta = Math.cos(theta);
+            vertex2.x = radius * sinTheta;
+            vertex2.y = -v * height + halfHeight;
+            vertex2.z = radius * cosTheta;
+            vertices.push(vertex2.x, vertex2.y, vertex2.z);
+            normal.set(sinTheta, slope, cosTheta).normalize();
+            normals.push(normal.x, normal.y, normal.z);
+            uvs.push(u, 1 - v);
+            indexRow.push(index++);
+          }
+          indexArray.push(indexRow);
+        }
+        for (let x = 0; x < radialSegments; x++) {
+          for (let y = 0; y < heightSegments; y++) {
+            const a = indexArray[y][x];
+            const b = indexArray[y + 1][x];
+            const c = indexArray[y + 1][x + 1];
+            const d = indexArray[y][x + 1];
+            indices.push(a, b, d);
+            indices.push(b, c, d);
+            groupCount += 6;
+          }
+        }
+        scope.addGroup(groupStart, groupCount, 0);
+        groupStart += groupCount;
+      }
+      function generateCap(top) {
+        const centerIndexStart = index;
+        const uv = new Vector2();
+        const vertex2 = new Vector3();
+        let groupCount = 0;
+        const radius = top === true ? radiusTop : radiusBottom;
+        const sign2 = top === true ? 1 : -1;
+        for (let x = 1; x <= radialSegments; x++) {
+          vertices.push(0, halfHeight * sign2, 0);
+          normals.push(0, sign2, 0);
+          uvs.push(0.5, 0.5);
+          index++;
+        }
+        const centerIndexEnd = index;
+        for (let x = 0; x <= radialSegments; x++) {
+          const u = x / radialSegments;
+          const theta = u * thetaLength + thetaStart;
+          const cosTheta = Math.cos(theta);
+          const sinTheta = Math.sin(theta);
+          vertex2.x = radius * sinTheta;
+          vertex2.y = halfHeight * sign2;
+          vertex2.z = radius * cosTheta;
+          vertices.push(vertex2.x, vertex2.y, vertex2.z);
+          normals.push(0, sign2, 0);
+          uv.x = cosTheta * 0.5 + 0.5;
+          uv.y = sinTheta * 0.5 * sign2 + 0.5;
+          uvs.push(uv.x, uv.y);
+          index++;
+        }
+        for (let x = 0; x < radialSegments; x++) {
+          const c = centerIndexStart + x;
+          const i = centerIndexEnd + x;
+          if (top === true) {
+            indices.push(i, i + 1, c);
+          } else {
+            indices.push(i + 1, i, c);
+          }
+          groupCount += 3;
+        }
+        scope.addGroup(groupStart, groupCount, top === true ? 1 : 2);
+        groupStart += groupCount;
+      }
+    }
+    static fromJSON(data) {
+      return new CylinderGeometry(data.radiusTop, data.radiusBottom, data.height, data.radialSegments, data.heightSegments, data.openEnded, data.thetaStart, data.thetaLength);
+    }
+  };
   var _v0 = new Vector3();
   var _v1$1 = new Vector3();
   var _normal = new Vector3();
@@ -24949,11 +25071,42 @@
   };
 
   // <stdin>
+  var acretionMaxDistance = 5;
+  var acretionMinDistance = 2;
+  var acretionGap = 0.01;
+  var starCount = 1e3;
+  var starInnerRadius = 25;
+  var starOuterRadius = 250;
+  var thetaMax = 6.28;
+  var getDir = (num) => num * (Math.random() > 0.5 ? -1 : 1);
+  var generateAcretionDisks = () => {
+    const ringCount = (acretionMaxDistance - acretionMinDistance) / acretionGap;
+    let levels = [];
+    for (let i = 0; i < ringCount; i = i + 2) {
+      const g = i + 1;
+      const [start, end] = [acretionMinDistance + i * acretionGap, acretionMinDistance + g * acretionGap];
+      levels.push([start, end]);
+    }
+    return levels;
+  };
+  var generateStars = () => {
+    let stars = [];
+    for (let i = 0; i < starCount; i = i + 2) {
+      const x = Math.random() * (starOuterRadius - starInnerRadius) + starInnerRadius;
+      const y = Math.random() * (starOuterRadius - starInnerRadius) + starInnerRadius;
+      const z = Math.random() * (starOuterRadius - starInnerRadius) + starInnerRadius;
+      stars.push([getDir(x), getDir(y), getDir(z)]);
+    }
+    return stars;
+  };
   window.onload = () => {
     let camera, controls, scene, renderer;
+    const acretionLevels = generateAcretionDisks();
+    const stars = generateStars();
+    let rings = [];
     const init = () => {
       scene = new Scene();
-      scene.background = new Color(13421772);
+      scene.background = new Texture(0);
       scene.fog = new FogExp2(13421772, 2e-3);
       renderer = new WebGLRenderer({ antialias: true });
       renderer.setPixelRatio(window.devicePixelRatio);
@@ -24961,6 +25114,9 @@
       document.body.appendChild(renderer.domElement);
       camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1e3);
       camera.position.set(100, 50, 0);
+      camera.rotation.x = 2.25;
+      camera.rotation.y = 0.04;
+      camera.rotation.z = -3;
       controls = new OrbitControls(camera, renderer.domElement);
       controls.listenToKeyEvents(window);
       controls.enableDamping = true;
@@ -24968,15 +25124,38 @@
       controls.screenSpacePanning = false;
       controls.minDistance = 5;
       controls.maxDistance = 15;
-      controls.maxPolarAngle = Math.PI / 2;
       const holeGeometry = new SphereGeometry();
       const holeMaterial = new MeshBasicMaterial({ color: 0 });
       const holeMesh = new Mesh(holeGeometry, holeMaterial);
       scene.add(holeMesh);
-      const geometry = new RingGeometry(3, 5, 64);
-      const material = new MeshBasicMaterial({ color: 16777215, side: DoubleSide });
-      const mesh = new Mesh(geometry, material);
-      scene.add(mesh);
+      for (const dir of [-1, 1]) {
+        const cylinder = new CylinderGeometry(2, 0.25, 35, 64, 24, true);
+        const cylinderMaterial = new MeshBasicMaterial({ color: 16777215, side: DoubleSide });
+        const cylinderMesh = new Mesh(cylinder, cylinderMaterial);
+        cylinderMesh.rotation.x = 1.5 * dir;
+        cylinderMaterial.transparent = true;
+        cylinderMaterial.opacity = 0.25;
+        cylinderMesh.position.z = 18 * dir;
+        cylinderMesh.position.y = 1.25;
+        scene.add(cylinderMesh);
+      }
+      for (const [inner, outer] of acretionLevels) {
+        const thetaStart = Math.random() * thetaMax;
+        const geometry = new RingGeometry(inner, outer, 64, 0, thetaStart, 5);
+        const material = new MeshBasicMaterial({ color: 16777215, side: DoubleSide });
+        const mesh = new Mesh(geometry, material);
+        rings.push(mesh);
+        scene.add(mesh);
+      }
+      for (const [x, y, z] of stars) {
+        const holeGeometry2 = new SphereGeometry(0.1, 24, 24);
+        const holeMaterial2 = new MeshBasicMaterial({ color: 16777215 });
+        const holeMesh2 = new Mesh(holeGeometry2, holeMaterial2);
+        holeMesh2.position.x = x;
+        holeMesh2.position.y = y;
+        holeMesh2.position.z = z;
+        scene.add(holeMesh2);
+      }
       const dirLight1 = new DirectionalLight(16777215);
       dirLight1.position.set(1, 1, 1);
       scene.add(dirLight1);
@@ -24993,7 +25172,13 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
     const animate = () => {
-      requestAnimationFrame(animate);
+      setTimeout(() => requestAnimationFrame(animate), 50);
+      for (const ring of rings) {
+        const int = Math.random();
+        if (!Math.ceil(int) === 1)
+          continue;
+        ring.rotation.z += 0.1;
+      }
       controls.update();
       render();
     };
