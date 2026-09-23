@@ -15,13 +15,17 @@ export const HomePage = () => {
       bodyClassName="bg-white text-gray-600 min-h-full w-full flex flex-col overscroll-y-none"
     >
       <Nav />
-      <main className="flex-1 w-full max-w-prose mx-auto px-6 pt-nav pb-16 space-y-16">
-        <section>
+      <main className="flex-1 w-full max-w-prose mx-auto px-6 pt-nav pb-16 space-y-12">
+        <section className="space-y-4">
+          <img
+            src="/picture.jpeg"
+            alt="Nathaniel Pendy"
+            className="h-32 w-32 rounded-2xl object-cover"
+          />
           <h1 className="text-3xl font-bold text-gray-800">Hey, I'm Nathaniel.</h1>
-          <p className="mt-4">
+          <p>
             Welcome to my personal site- largely a collection of random projects that seemed interesting and potentially a blog post or two if I feel like musing about some random topic that nobody else finds interesting.
           </p>
-          <p className="mb-0">Have a look around.</p>
         </section>
         <section id="projects">
           <h2 className="text-gray-800">Projects</h2>
@@ -40,7 +44,7 @@ export const HomePage = () => {
             ))}
           </ul>
           <a
-            className="mt-4 inline-flex items-center gap-1 text-blue-500 no-underline hover:underline"
+            className="inline-flex items-center gap-1 text-blue-500 no-underline hover:underline"
             href="/projects/"
           >
             See all projects
@@ -63,7 +67,7 @@ export const HomePage = () => {
             ))}
           </ul>
           <a
-            className="mt-4 inline-flex items-center gap-1 text-blue-500 no-underline hover:underline"
+            className="inline-flex items-center gap-1 text-blue-500 no-underline hover:underline"
             href="/blog/"
           >
             See all posts

@@ -20,6 +20,8 @@ export const Document = ({
         <meta name="author" content={AUTHOR} />
         <meta name="generator" content="ReactDOM.renderToStaticMarkup" />
         <title>{title}</title>
+        <link rel="icon" type="image/jpeg" href="/picture.jpeg" />
+        <link rel="apple-touch-icon" href="/picture.jpeg" />
         <link rel="canonical" href={SITE_URL} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
