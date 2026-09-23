@@ -1,0 +1,7 @@
+node_modules
+public
+.tmp
+.git
+.github
+*.pem
+.DS_STORE

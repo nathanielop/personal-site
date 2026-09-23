@@ -1,18 +1,31 @@
 {
+  "private": true,
   "name": "nathaniel-personal-site",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "A personal site of sorts",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nathanielop/personal-site.git"
   },
   "homepage": "https://github.com/nathanielop/personal-site#readme",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "serve": "node scripts/serve.mjs"
+  },
   "dependencies": {
-    "autoprefixer": "10.2",
-    "bootstrap-icons": "1.5",
-    "postcss": "8.3",
-    "postcss-cli": "8.3",
-    "tailwindcss": "2",
-    "three": "0.136"
+    "lucide-react": "^1.47.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "three": "0.136.0"
+  },
+  "devDependencies": {
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "autoprefixer": "10.4.16",
+    "esbuild": "0.19.11",
+    "postcss": "8.4.33",
+    "tailwindcss": "3.4.1"
   }
 }

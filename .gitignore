@@ -1,6 +1,7 @@
-/src/*.pem
 .DS_STORE
 node_modules
-resources/*
-build/*
-public/*
+.tmp
+.livereload
+public
+*.pem
+.npm-cache
